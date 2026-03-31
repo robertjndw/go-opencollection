@@ -389,17 +389,17 @@ func (rb *HttpRequestBuilder) Auth(auth Auth) *HttpRequestBuilder {
 
 // BearerAuth sets bearer token authentication.
 func (rb *HttpRequestBuilder) BearerAuth(token string) *HttpRequestBuilder {
-	return rb.Auth(Auth{IsSet: true, Bearer: &AuthBearer{Type: "bearer", Token: token}})
+	return rb.Auth(BearerAuth(token))
 }
 
 // BasicAuth sets HTTP Basic authentication.
 func (rb *HttpRequestBuilder) BasicAuth(username, password string) *HttpRequestBuilder {
-	return rb.Auth(Auth{IsSet: true, Basic: &AuthBasic{Type: "basic", Username: username, Password: password}})
+	return rb.Auth(BasicAuth(username, password))
 }
 
 // InheritAuth marks this request as inheriting auth from its parent.
 func (rb *HttpRequestBuilder) InheritAuth() *HttpRequestBuilder {
-	return rb.Auth(Auth{IsSet: true, Inherit: true})
+	return rb.Auth(InheritAuth())
 }
 
 // Var adds a runtime variable to the request.
@@ -510,7 +510,7 @@ func (rb *GraphQLRequestBuilder) Auth(auth Auth) *GraphQLRequestBuilder {
 
 // BearerAuth sets bearer token authentication.
 func (rb *GraphQLRequestBuilder) BearerAuth(token string) *GraphQLRequestBuilder {
-	return rb.Auth(Auth{IsSet: true, Bearer: &AuthBearer{Type: "bearer", Token: token}})
+	return rb.Auth(BearerAuth(token))
 }
 
 // Assert adds a response assertion.

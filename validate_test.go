@@ -25,7 +25,6 @@ func TestValidate_WithHTTPRequest(t *testing.T) {
 			oc.BuildHttpRequest("List", "GET", "/items").Build(),
 		).
 		Build()
-	c.Items[0].HttpRequest.Info.Type = "http"
 
 	if err := oc.Validate(c); err != nil {
 		t.Errorf("unexpected error: %v", err)

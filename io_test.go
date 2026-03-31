@@ -108,10 +108,8 @@ func TestMarshal_RoundTrip(t *testing.T) {
 				Build(),
 		).
 		Build()
-	original.Items[0].HttpRequest.Info.Type = "http"
 
 	data := mustMarshal(t, original)
-
 	restored, err := oc.Parse(data)
 	if err != nil {
 		t.Fatalf("Parse after Marshal: %v", err)

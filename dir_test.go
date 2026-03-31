@@ -45,10 +45,6 @@ func buildTestCollection() *oc.Collection {
 		Build()
 
 	// Fix info.type (builder sets it; ensure it's correct for test clarity)
-	c.Items[0].Folder.Info.Type = "folder"
-	c.Items[0].Folder.Items[0].HttpRequest.Info.Type = "http"
-	c.Items[0].Folder.Items[1].HttpRequest.Info.Type = "http"
-	c.Items[1].HttpRequest.Info.Type = "http"
 	return c
 }
 
@@ -217,28 +213,17 @@ func TestReadDir_FolderWithoutFolderYML(t *testing.T) {
 	if err := os.MkdirAll(filepath.Join(dir, "misc"), 0o755); err != nil {
 		t.Fatalf("MkdirAll: %v", err)
 	}
-	// Write a request inside it
-	req := &oc.HttpRequest{
-		Info: oc.HttpRequestInfo{Name: "Ping", Type: "http"},
-		Http: oc.HttpRequestDetails{Method: "GET", URL: "/ping"},
-	}
-	data, _ := oc.Marshal(&oc.Collection{
-		OpenCollection: "1",
-		Info:           oc.Info{Name: "_"},
-		Items:          []oc.Item{{HttpRequest: req}},
-	})
-	// Write only the request item YAML (not the full collection)
-	import_yaml := `info:
+	// Write a request item YAML directly (not a full collection document).
+	const pingYAML = `info:
   name: Ping
   type: http
 http:
   method: GET
   url: /ping
 `
-	if err := os.WriteFile(filepath.Join(dir, "misc", "ping.yml"), []byte(import_yaml), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(dir, "misc", "ping.yml"), []byte(pingYAML), 0o644); err != nil {
 		t.Fatalf("WriteFile ping.yml: %v", err)
 	}
-	_ = data
 
 	c, err := oc.ReadDir(dir)
 	if err != nil {
@@ -271,10 +256,6 @@ func TestWriteDir_NestedFolders(t *testing.T) {
 				Build(),
 		).
 		Build()
-	c.Items[0].Folder.Info.Type = "folder"
-	c.Items[0].Folder.Items[0].Folder.Info.Type = "folder"
-	c.Items[0].Folder.Items[0].Folder.Items[0].HttpRequest.Info.Type = "http"
-
 	if err := oc.WriteDir(dir, c); err != nil {
 		t.Fatalf("WriteDir: %v", err)
 	}

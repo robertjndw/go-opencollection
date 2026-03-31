@@ -257,7 +257,7 @@ func writeItems(dir string, items []Item) error {
 func marshalYAMLFile(path string, v any) error {
 	data, err := yaml.Marshal(v)
 	if err != nil {
-		return fmt.Errorf("opencollection: marshal %s: %w", filepath.Base(path), err)
+		return fmt.Errorf("opencollection: marshal %s: %w", path, err)
 	}
 	return os.WriteFile(path, data, 0o644)
 }
@@ -273,8 +273,12 @@ func isEmptyCollectionConfig(c *CollectionConfig) bool {
 // Items without a seq value keep their original relative order after
 // items that do have one.
 func sortBySeq(items []Item) {
+	seqs := make([]*float64, len(items))
+	for i, item := range items {
+		seqs[i] = itemSeq(item)
+	}
 	sort.SliceStable(items, func(i, j int) bool {
-		si, sj := itemSeq(items[i]), itemSeq(items[j])
+		si, sj := seqs[i], seqs[j]
 		if si == nil || sj == nil {
 			return false
 		}
