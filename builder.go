@@ -71,12 +71,12 @@ func (b *CollectionBuilder) DefaultRequest(req RequestDefaults) *CollectionBuild
 	return b
 }
 
-// Environment adds an environment to the collection config.
-func (b *CollectionBuilder) Environment(env Environment) *CollectionBuilder {
+// Environment adds one or more environments to the collection config.
+func (b *CollectionBuilder) Environment(envs ...Environment) *CollectionBuilder {
 	if b.c.Config == nil {
 		b.c.Config = &CollectionConfig{}
 	}
-	b.c.Config.Environments = append(b.c.Config.Environments, env)
+	b.c.Config.Environments = append(b.c.Config.Environments, envs...)
 	return b
 }
 
@@ -89,35 +89,50 @@ func (b *CollectionBuilder) Proxy(proxy Proxy) *CollectionBuilder {
 	return b
 }
 
-// AddItem appends an item (request, folder, or script) to the collection.
-func (b *CollectionBuilder) AddItem(item Item) *CollectionBuilder {
-	b.c.Items = append(b.c.Items, item)
+// AddItem appends one or more items (request, folder, or script) to the collection.
+func (b *CollectionBuilder) AddItem(items ...Item) *CollectionBuilder {
+	b.c.Items = append(b.c.Items, items...)
 	return b
 }
 
-// AddHttpRequest appends an HTTP request to the collection.
-func (b *CollectionBuilder) AddHttpRequest(r *HttpRequest) *CollectionBuilder {
-	return b.AddItem(Item{HttpRequest: r})
+// AddHttpRequest appends one or more HTTP requests to the collection.
+func (b *CollectionBuilder) AddHttpRequest(rs ...*HttpRequest) *CollectionBuilder {
+	for _, r := range rs {
+		b.AddItem(Item{HttpRequest: r})
+	}
+	return b
 }
 
-// AddGraphQLRequest appends a GraphQL request to the collection.
-func (b *CollectionBuilder) AddGraphQLRequest(r *GraphQLRequest) *CollectionBuilder {
-	return b.AddItem(Item{GraphQLRequest: r})
+// AddGraphQLRequest appends one or more GraphQL requests to the collection.
+func (b *CollectionBuilder) AddGraphQLRequest(rs ...*GraphQLRequest) *CollectionBuilder {
+	for _, r := range rs {
+		b.AddItem(Item{GraphQLRequest: r})
+	}
+	return b
 }
 
-// AddGrpcRequest appends a gRPC request to the collection.
-func (b *CollectionBuilder) AddGrpcRequest(r *GrpcRequest) *CollectionBuilder {
-	return b.AddItem(Item{GrpcRequest: r})
+// AddGrpcRequest appends one or more gRPC requests to the collection.
+func (b *CollectionBuilder) AddGrpcRequest(rs ...*GrpcRequest) *CollectionBuilder {
+	for _, r := range rs {
+		b.AddItem(Item{GrpcRequest: r})
+	}
+	return b
 }
 
-// AddWebSocketRequest appends a WebSocket request to the collection.
-func (b *CollectionBuilder) AddWebSocketRequest(r *WebSocketRequest) *CollectionBuilder {
-	return b.AddItem(Item{WebSocket: r})
+// AddWebSocketRequest appends one or more WebSocket requests to the collection.
+func (b *CollectionBuilder) AddWebSocketRequest(rs ...*WebSocketRequest) *CollectionBuilder {
+	for _, r := range rs {
+		b.AddItem(Item{WebSocket: r})
+	}
+	return b
 }
 
-// AddFolder appends a folder to the collection.
-func (b *CollectionBuilder) AddFolder(f *Folder) *CollectionBuilder {
-	return b.AddItem(Item{Folder: f})
+// AddFolder appends one or more folders to the collection.
+func (b *CollectionBuilder) AddFolder(fs ...*Folder) *CollectionBuilder {
+	for _, f := range fs {
+		b.AddItem(Item{Folder: f})
+	}
+	return b
 }
 
 // Build returns the constructed Collection.
@@ -160,9 +175,9 @@ func (fb *FolderBuilder) Seq(seq float64) *FolderBuilder {
 	return fb
 }
 
-// Tag adds a tag to the folder.
-func (fb *FolderBuilder) Tag(tag string) *FolderBuilder {
-	fb.f.Info.Tags = append(fb.f.Info.Tags, tag)
+// Tag adds one or more tags to the folder.
+func (fb *FolderBuilder) Tag(tags ...string) *FolderBuilder {
+	fb.f.Info.Tags = append(fb.f.Info.Tags, tags...)
 	return fb
 }
 
@@ -172,30 +187,42 @@ func (fb *FolderBuilder) DefaultRequest(req RequestDefaults) *FolderBuilder {
 	return fb
 }
 
-// AddItem appends an item to the folder.
-func (fb *FolderBuilder) AddItem(item Item) *FolderBuilder {
-	fb.f.Items = append(fb.f.Items, item)
+// AddItem appends one or more items to the folder.
+func (fb *FolderBuilder) AddItem(items ...Item) *FolderBuilder {
+	fb.f.Items = append(fb.f.Items, items...)
 	return fb
 }
 
-// AddHttpRequest appends an HTTP request to the folder.
-func (fb *FolderBuilder) AddHttpRequest(r *HttpRequest) *FolderBuilder {
-	return fb.AddItem(Item{HttpRequest: r})
+// AddHttpRequest appends one or more HTTP requests to the folder.
+func (fb *FolderBuilder) AddHttpRequest(rs ...*HttpRequest) *FolderBuilder {
+	for _, r := range rs {
+		fb.AddItem(Item{HttpRequest: r})
+	}
+	return fb
 }
 
-// AddGraphQLRequest appends a GraphQL request to the folder.
-func (fb *FolderBuilder) AddGraphQLRequest(r *GraphQLRequest) *FolderBuilder {
-	return fb.AddItem(Item{GraphQLRequest: r})
+// AddGraphQLRequest appends one or more GraphQL requests to the folder.
+func (fb *FolderBuilder) AddGraphQLRequest(rs ...*GraphQLRequest) *FolderBuilder {
+	for _, r := range rs {
+		fb.AddItem(Item{GraphQLRequest: r})
+	}
+	return fb
 }
 
-// AddGrpcRequest appends a gRPC request to the folder.
-func (fb *FolderBuilder) AddGrpcRequest(r *GrpcRequest) *FolderBuilder {
-	return fb.AddItem(Item{GrpcRequest: r})
+// AddGrpcRequest appends one or more gRPC requests to the folder.
+func (fb *FolderBuilder) AddGrpcRequest(rs ...*GrpcRequest) *FolderBuilder {
+	for _, r := range rs {
+		fb.AddItem(Item{GrpcRequest: r})
+	}
+	return fb
 }
 
-// AddFolder adds a nested folder.
-func (fb *FolderBuilder) AddFolder(nested *FolderBuilder) *FolderBuilder {
-	return fb.AddItem(Item{Folder: nested.Build()})
+// AddFolder adds one or more nested folders.
+func (fb *FolderBuilder) AddFolder(nested ...*FolderBuilder) *FolderBuilder {
+	for _, n := range nested {
+		fb.AddItem(Item{Folder: n.Build()})
+	}
+	return fb
 }
 
 // Build returns the constructed Folder.
@@ -303,9 +330,9 @@ func (rb *HttpRequestBuilder) Seq(seq float64) *HttpRequestBuilder {
 	return rb
 }
 
-// Tag adds a tag to the request.
-func (rb *HttpRequestBuilder) Tag(tag string) *HttpRequestBuilder {
-	rb.r.Info.Tags = append(rb.r.Info.Tags, tag)
+// Tag adds one or more tags to the request.
+func (rb *HttpRequestBuilder) Tag(tags ...string) *HttpRequestBuilder {
+	rb.r.Info.Tags = append(rb.r.Info.Tags, tags...)
 	return rb
 }
 
@@ -457,9 +484,9 @@ func (rb *GraphQLRequestBuilder) Description(content string) *GraphQLRequestBuil
 	return rb
 }
 
-// Tag adds a tag to the request.
-func (rb *GraphQLRequestBuilder) Tag(tag string) *GraphQLRequestBuilder {
-	rb.r.Info.Tags = append(rb.r.Info.Tags, tag)
+// Tag adds one or more tags to the request.
+func (rb *GraphQLRequestBuilder) Tag(tags ...string) *GraphQLRequestBuilder {
+	rb.r.Info.Tags = append(rb.r.Info.Tags, tags...)
 	return rb
 }
 

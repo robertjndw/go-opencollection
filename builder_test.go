@@ -406,6 +406,168 @@ func TestInheritAuthConstructor(t *testing.T) {
 	}
 }
 
+// ---- Variadic multi-arg coverage ----
+
+func TestCollectionBuilder_AddItem_Multiple(t *testing.T) {
+	r1 := oc.BuildHttpRequest("R1", "GET", "/a").Build()
+	r2 := oc.BuildHttpRequest("R2", "GET", "/b").Build()
+	c := oc.New("API").
+		AddItem(oc.Item{HttpRequest: r1}, oc.Item{HttpRequest: r2}).
+		Build()
+	if len(c.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(c.Items))
+	}
+}
+
+func TestCollectionBuilder_AddHttpRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildHttpRequest("R1", "GET", "/a").Build()
+	r2 := oc.BuildHttpRequest("R2", "POST", "/b").Build()
+	r3 := oc.BuildHttpRequest("R3", "DELETE", "/c").Build()
+	c := oc.New("API").AddHttpRequest(r1, r2, r3).Build()
+	if len(c.Items) != 3 {
+		t.Fatalf("expected 3 items, got %d", len(c.Items))
+	}
+	for i, item := range c.Items {
+		if item.HttpRequest == nil {
+			t.Errorf("items[%d].HttpRequest is nil", i)
+		}
+	}
+}
+
+func TestCollectionBuilder_AddGraphQLRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildGraphQLRequest("Q1", "https://api.example.com/graphql").Build()
+	r2 := oc.BuildGraphQLRequest("Q2", "https://api.example.com/graphql").Build()
+	c := oc.New("API").AddGraphQLRequest(r1, r2).Build()
+	if len(c.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(c.Items))
+	}
+	for i, item := range c.Items {
+		if item.GraphQLRequest == nil {
+			t.Errorf("items[%d].GraphQLRequest is nil", i)
+		}
+	}
+}
+
+func TestCollectionBuilder_AddGrpcRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildGrpcRequest("R1", "localhost:50051", "svc/MethodA").Build()
+	r2 := oc.BuildGrpcRequest("R2", "localhost:50051", "svc/MethodB").Build()
+	c := oc.New("API").AddGrpcRequest(r1, r2).Build()
+	if len(c.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(c.Items))
+	}
+	for i, item := range c.Items {
+		if item.GrpcRequest == nil {
+			t.Errorf("items[%d].GrpcRequest is nil", i)
+		}
+	}
+}
+
+func TestCollectionBuilder_AddFolder_Multiple(t *testing.T) {
+	f1 := oc.NewFolder("Users").Build()
+	f2 := oc.NewFolder("Products").Build()
+	c := oc.New("API").AddFolder(f1, f2).Build()
+	if len(c.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(c.Items))
+	}
+	if c.Items[0].Folder.Info.Name != "Users" || c.Items[1].Folder.Info.Name != "Products" {
+		t.Errorf("unexpected folder names: %q, %q", c.Items[0].Folder.Info.Name, c.Items[1].Folder.Info.Name)
+	}
+}
+
+func TestCollectionBuilder_Environment_Multiple(t *testing.T) {
+	dev := oc.NewEnvironment("dev").Var("host", "localhost").Build()
+	prod := oc.NewEnvironment("prod").Var("host", "api.example.com").Build()
+	c := oc.New("API").Environment(dev, prod).Build()
+	if c.Config == nil || len(c.Config.Environments) != 2 {
+		t.Fatalf("expected 2 environments, got %d", len(c.Config.Environments))
+	}
+	if c.Config.Environments[0].Name != "dev" || c.Config.Environments[1].Name != "prod" {
+		t.Errorf("unexpected env names: %q, %q", c.Config.Environments[0].Name, c.Config.Environments[1].Name)
+	}
+}
+
+func TestFolderBuilder_AddItem_Multiple(t *testing.T) {
+	r1 := oc.BuildHttpRequest("R1", "GET", "/a").Build()
+	r2 := oc.BuildHttpRequest("R2", "GET", "/b").Build()
+	f := oc.NewFolder("F").
+		AddItem(oc.Item{HttpRequest: r1}, oc.Item{HttpRequest: r2}).
+		Build()
+	if len(f.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(f.Items))
+	}
+}
+
+func TestFolderBuilder_AddHttpRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildHttpRequest("R1", "GET", "/a").Build()
+	r2 := oc.BuildHttpRequest("R2", "POST", "/b").Build()
+	f := oc.NewFolder("F").AddHttpRequest(r1, r2).Build()
+	if len(f.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(f.Items))
+	}
+}
+
+func TestFolderBuilder_AddGraphQLRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildGraphQLRequest("Q1", "https://api.example.com/graphql").Build()
+	r2 := oc.BuildGraphQLRequest("Q2", "https://api.example.com/graphql").Build()
+	f := oc.NewFolder("F").AddGraphQLRequest(r1, r2).Build()
+	if len(f.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(f.Items))
+	}
+}
+
+func TestFolderBuilder_AddGrpcRequest_Multiple(t *testing.T) {
+	r1 := oc.BuildGrpcRequest("R1", "localhost:50051", "svc/MethodA").Build()
+	r2 := oc.BuildGrpcRequest("R2", "localhost:50051", "svc/MethodB").Build()
+	f := oc.NewFolder("F").AddGrpcRequest(r1, r2).Build()
+	if len(f.Items) != 2 {
+		t.Fatalf("expected 2 items, got %d", len(f.Items))
+	}
+}
+
+func TestFolderBuilder_AddFolder_Multiple(t *testing.T) {
+	outer := oc.NewFolder("Outer").
+		AddFolder(oc.NewFolder("A"), oc.NewFolder("B"), oc.NewFolder("C")).
+		Build()
+	if len(outer.Items) != 3 {
+		t.Fatalf("expected 3 nested folders, got %d", len(outer.Items))
+	}
+	names := []string{"A", "B", "C"}
+	for i, name := range names {
+		if outer.Items[i].Folder.Info.Name != name {
+			t.Errorf("items[%d].Folder.Info.Name = %q, want %q", i, outer.Items[i].Folder.Info.Name, name)
+		}
+	}
+}
+
+func TestFolderBuilder_Tag_Multiple(t *testing.T) {
+	f := oc.NewFolder("F").Tag("alpha", "beta", "gamma").Build()
+	if len(f.Info.Tags) != 3 {
+		t.Fatalf("expected 3 tags, got %d", len(f.Info.Tags))
+	}
+}
+
+func TestBuildHttpRequest_Tag_Multiple(t *testing.T) {
+	r := oc.BuildHttpRequest("R", "GET", "/").Tag("smoke", "regression", "nightly").Build()
+	if len(r.Info.Tags) != 3 {
+		t.Fatalf("expected 3 tags, got %d", len(r.Info.Tags))
+	}
+	expected := []string{"smoke", "regression", "nightly"}
+	for i, tag := range expected {
+		if r.Info.Tags[i] != tag {
+			t.Errorf("Tags[%d] = %q, want %q", i, r.Info.Tags[i], tag)
+		}
+	}
+}
+
+func TestBuildGraphQLRequest_Tag_Multiple(t *testing.T) {
+	r := oc.BuildGraphQLRequest("Q", "https://api.example.com/graphql").
+		Tag("smoke", "graphql").
+		Build()
+	if len(r.Info.Tags) != 2 {
+		t.Fatalf("expected 2 tags, got %d", len(r.Info.Tags))
+	}
+}
+
 // ---- RequestDefaultsBuilder ----
 
 func TestRequestDefaultsBuilder(t *testing.T) {
