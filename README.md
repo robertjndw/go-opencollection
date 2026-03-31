@@ -72,7 +72,7 @@ my-api/
 err := opencollection.Validate(c)
 ```
 
-`Validate` marshals the collection to its canonical YAML form, round-trips it through JSON, and validates it against the embedded OpenCollection JSON schema. Errors are returned as `*jsonschema.ValidationError` with full detail.
+`Validate` marshals the collection to its canonical YAML form, round-trips it through JSON, and validates it against the embedded OpenCollection JSON schema. Validation errors are returned as plain Go errors with a message describing the failing constraint.
 
 ## Builders
 

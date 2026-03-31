@@ -3,12 +3,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/santhosh-tekuri/jsonschema/v5"
 	opencollection "go-opencollection"
 )
 
@@ -24,15 +22,7 @@ func main() {
 	}
 
 	if err := opencollection.Validate(c); err != nil {
-		var ve *jsonschema.ValidationError
-		if errors.As(err, &ve) {
-			fmt.Println("Validation failed:")
-			for _, cause := range ve.Causes {
-				fmt.Printf("  - %s: %s\n", cause.InstanceLocation, cause.Message)
-			}
-		} else {
-			fmt.Printf("Validation error: %v\n", err)
-		}
+		fmt.Printf("Validation failed: %v\n", err)
 		os.Exit(1)
 	}
 
