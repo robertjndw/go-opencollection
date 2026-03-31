@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	opencollection "go-opencollection"
+	opencollection "github.com/robertjndw/go-opencollection"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module go-opencollection
+module github.com/robertjndw/go-opencollection
 
 go 1.25
 

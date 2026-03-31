@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	opencollection "go-opencollection"
+	opencollection "github.com/robertjndw/go-opencollection"
 )
 
 func main() {

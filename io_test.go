@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	oc "go-opencollection"
+	oc "github.com/robertjndw/go-opencollection"
 )
 
 // ---- helpers ----

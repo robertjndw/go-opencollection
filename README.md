@@ -5,7 +5,7 @@ Go library for reading, writing, validating, and building [OpenCollection](https
 ## Installation
 
 ```sh
-go get go-opencollection
+go get github.com/robertjndw/go-opencollection
 ```
 
 ## Quick start

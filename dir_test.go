@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	oc "go-opencollection"
+	oc "github.com/robertjndw/go-opencollection"
 )
 
 // buildTestCollection builds a collection with nested folders and multiple

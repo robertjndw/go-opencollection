@@ -3,7 +3,7 @@ package opencollection_test
 import (
 	"testing"
 
-	oc "go-opencollection"
+	oc "github.com/robertjndw/go-opencollection"
 )
 
 // ---- CollectionBuilder ----
